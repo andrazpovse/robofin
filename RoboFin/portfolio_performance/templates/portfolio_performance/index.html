@@ -1,0 +1,102 @@
+{% extends 'router/base.html' %}
+
+{% block nav_item_pf_builder %}active{% endblock nav_item_pf_builder %}
+
+{% block content %}
+<script>
+window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	zoomEnabled:true,
+	title: {
+		text: "Portfolio Performance",
+		margin: 50,
+	},
+	axisX: {
+		valueFormatString: "MMM YYYY",
+		interval: 1,
+		// title: "Title with Margin",
+  		margin: 50,
+	},
+	axisY2: {
+		logarithmic:  true,
+	},
+	toolTip: {
+		shared: true
+	},
+	legend: {
+		cursor: "pointer",
+		verticalAlign: "top",
+		horizontalAlign: "center",
+		dockInsidePlotArea: true,
+		margin: 20,
+	},
+	data: []
+});
+
+var idx = 0;
+{% for name, data in cumulative_returns.items %}
+		// Create new line on chart
+		if ("{{ name }}" === "Your Portfolio") {
+			chart.options.data.push({
+				type:"line",
+				lineThickness: 5,
+				axisYType: "secondary",
+				name: "{{ name }}",
+				showInLegend: true,
+				markerSize: 0,
+				yValueFormatString: "$#",
+				dataPoints: [		
+				]
+			});
+			// chart.options.axisY2.maximum = parseInt("{{data|last|last}}")*2
+		} else {
+			chart.options.data.push({
+			type:"line",
+			lineDashType: "dash",
+			axisYType: "secondary",
+			name: "{{ name }}",
+			showInLegend: true,
+			markerSize: 0,
+			yValueFormatString: "$#",
+			dataPoints: [		
+			]
+		});
+		}
+
+		
+
+		{% for day in data %}
+			var date = "{{day.0}}".split("-");
+			// JavaScript month index starts from 0
+			var month = parseInt(date[1]) - 1
+			chart.options.data[idx].dataPoints.push({
+						x: new Date(date[0], month, date[2]),
+						y: parseInt("{{day.1}}")
+			});
+		{% endfor %}
+		
+		idx++;   
+{% endfor %}
+
+chart.render();
+
+}
+</script>
+
+
+
+
+<div id="chartContainer" style="height: 400px; width: 100%;margin-bottom: 50px;"></div>
+
+<!-- <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'questionare:redo_questionare' %}" role="button">Redo Questionare</a> -->
+
+
+<a class="btn btn-secondary ml-3" role="button" href="{% url 'portfolio_performance:index' %}">All</a>
+<a class="btn btn-secondary ml-3" role="button" href="{% url 'portfolio_performance:crypto_crash' %}">Cryptocurrency drop 2017/18</a>
+<a class="btn btn-secondary ml-3" role="button" href="{% url 'portfolio_performance:covid_drop' %}">COVID-19 drop</a>
+<a class="btn btn-secondary ml-3" role="button" href="{% url 'portfolio_performance:covid_recovery' %}">COVID-19 recovery</a>
+
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+{% endblock content %}

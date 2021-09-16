@@ -1,0 +1,47 @@
+{% extends 'router/base.html' %}
+
+{% block nav_item_questionare %}
+    active
+{% endblock nav_item_questionare %}
+
+{% block content %}
+<div class="container-fluid">
+    {% if questions %}
+    <div class="row">
+		<div class="col-md-12">
+            <form action="{% url 'questionare:submit_questionare' %}" method="post">
+            {% for question in questions %}
+                    {% csrf_token %}
+                    <fieldset id="{{ question.id }}" class="border mb-4 mr-4 ml-4" >
+                        <legend><h1 class="ml-4">{{ question.question_text }}</h1></legend>
+                        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+                        {% for choice in question.choice_set.all %}
+                            {% if forloop.counter == 1 %}
+                                <input class="ml-3" type="radio" name="{{ question.id }}" id="{{ question.id }}{{ forloop.counter }}" value="{{ choice.choice_points }}" 
+                                checked>
+                            {% else %}
+                                <input class="ml-3" type="radio" name="{{ question.id }}" id="{{ question.id }}{{ forloop.counter }}" value="{{ choice.choice_points }}" 
+                                >
+                            {% endif %}
+                            <label for="{{ question.id }}{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+                        {% endfor %}
+                    </fieldset>
+            {% endfor %}
+                <input class="btn btn-primary mt-2 mb-4 ml-4" type="submit" value="Submit">
+            </form>
+        <div>
+	</div>
+    {% elif risk_score %}
+    <p>Your risk score is {{ risk_score }}</p>
+    <br>
+    <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'questionare:redo_questionare' %}" role="button">Redo Questionare</a>
+    {% else %}
+        <p>Questions failed to load or missing.</p>
+    {% endif %}
+<div>
+{% endblock content %}
+
+
+
+
+

@@ -1,0 +1,52 @@
+{% extends 'router/base.html' %}
+
+{% block nav_item_my_pf %}
+    active
+{% endblock nav_item_my_pf %}
+
+
+{% block content %}
+
+{% if not portfolio_data %}
+<div class="alert alert-danger" role="alert">
+    Please complete questionare first.
+</div>
+{% endif %}
+
+<div id="chartContainer" style="height: 500px; width: 100%;"></div>
+
+<script>
+window.onload = function() {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	title: {
+		text: "{{user}}'s portfolio",
+        margin: 50,
+	},
+	data: [{
+		type: "pie",
+        showInLegend: true,
+		startAngle: 240,
+		yValueFormatString: "##0.00 \"%\"",
+		indexLabel: "{name} {y}",
+		dataPoints: []
+	}]
+});
+
+{% for pd in portfolio_data %}
+    {% if pd.1 != 0 %}
+        chart.options.data[0].dataPoints.push({
+                    name: "{{ pd.0 }}",
+                    y: "{{ pd.1 }}"
+        });
+    {% endif %}
+{% endfor %}
+
+chart.render();
+
+}
+</script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+{% endblock content %}
