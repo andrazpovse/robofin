@@ -1,3 +1,8 @@
+<img src="images/logo.png" alt="logo" width="100%"/>
+
+# RoboFin
+RoboFin is a robo financial advisor, that takes care of investments for you. Based on your risk profile, it automatically assigns you a portfolio, tailored to fit your needs. Aside from classic financial instruments such as equities, bonds and commodities, RoboFin also allocates into five largest cryptocurrencies (BTC, ETH, ADA, BNB and XRP).
+
 # Launch RoboFin in Docker
 We have made the application easy to run and preview using Docker.
 Build and run the docker image by running the following command inside the root of the project.
